@@ -23,6 +23,10 @@ export async function POST(request: Request) {
   const supabase = createRouteHandlerClient({ cookies })
 
   try {
+    console.log('Iniciando cadastro de cliente')
+    const data = await request.json()
+    console.log('Dados recebidos:', data)
+
     const {
       nome,
       cpf,
@@ -37,10 +41,23 @@ export async function POST(request: Request) {
       cep,
       data_nascimento,
       observacoes
-    } = await request.json()
+    } = data
 
     // Validações básicas
     if (!nome || !cpf || !rg || !telefone || !email || !endereco || !bairro || !cidade || !estado || !cep || !data_nascimento) {
+      console.error('Campos obrigatórios faltando:', {
+        nome: !nome,
+        cpf: !cpf,
+        rg: !rg,
+        telefone: !telefone,
+        email: !email,
+        endereco: !endereco,
+        bairro: !bairro,
+        cidade: !cidade,
+        estado: !estado,
+        cep: !cep,
+        data_nascimento: !data_nascimento
+      })
       return NextResponse.json(
         { error: 'Todos os campos obrigatórios devem ser preenchidos' },
         { status: 400 }
@@ -64,7 +81,9 @@ export async function POST(request: Request) {
       observacoes: observacoes?.trim() || null
     }
 
-    const { data, error } = await supabase
+    console.log('Dados formatados:', formattedData)
+
+    const { data: savedData, error } = await supabase
       .from('clientes')
       .insert([formattedData])
       .select()
@@ -92,16 +111,17 @@ export async function POST(request: Request) {
       }
 
       return NextResponse.json(
-        { error: 'Erro ao salvar cliente no banco de dados' },
+        { error: 'Erro ao salvar cliente no banco de dados: ' + error.message },
         { status: 400 }
       )
     }
 
-    return NextResponse.json(data[0])
+    console.log('Cliente salvo com sucesso:', savedData)
+    return NextResponse.json(savedData[0])
   } catch (error) {
     console.error('Erro ao processar requisição:', error)
     return NextResponse.json(
-      { error: 'Erro ao processar a requisição' },
+      { error: error instanceof Error ? error.message : 'Erro ao processar a requisição' },
       { status: 500 }
     )
   }

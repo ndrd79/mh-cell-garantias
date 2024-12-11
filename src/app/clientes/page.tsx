@@ -10,6 +10,7 @@ export default function ClientesPage() {
   const [isLoading, setIsLoading] = useState(true)
   const [showForm, setShowForm] = useState(false)
   const [selectedCliente, setSelectedCliente] = useState<Cliente | null>(null)
+  const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
     loadClientes()
@@ -18,13 +19,17 @@ export default function ClientesPage() {
   async function loadClientes() {
     try {
       setIsLoading(true)
+      setError(null)
       const response = await fetch('/api/clientes')
-      if (!response.ok) throw new Error('Erro ao carregar clientes')
+      if (!response.ok) {
+        const error = await response.json()
+        throw new Error(error.message || 'Erro ao carregar clientes')
+      }
       const data = await response.json()
       setClientes(data || [])
     } catch (error) {
       console.error('Erro ao carregar clientes:', error)
-      alert('Erro ao carregar clientes. Tente novamente.')
+      setError('Erro ao carregar clientes. Tente novamente.')
     } finally {
       setIsLoading(false)
     }
@@ -32,9 +37,12 @@ export default function ClientesPage() {
 
   async function handleSubmit(data: NovoCliente) {
     try {
+      setError(null)
       const url = selectedCliente 
         ? `/api/clientes/${selectedCliente.id}`
         : '/api/clientes'
+
+      console.log('Enviando dados:', data)
 
       const response = await fetch(url, {
         method: selectedCliente ? 'PUT' : 'POST',
@@ -44,9 +52,10 @@ export default function ClientesPage() {
         body: JSON.stringify(data),
       })
 
+      const result = await response.json()
+
       if (!response.ok) {
-        const error = await response.json()
-        throw new Error(error.message || 'Erro ao salvar cliente')
+        throw new Error(result.error || 'Erro ao salvar cliente')
       }
 
       setShowForm(false)
@@ -54,7 +63,7 @@ export default function ClientesPage() {
       loadClientes()
     } catch (error) {
       console.error('Erro ao salvar cliente:', error)
-      alert('Erro ao salvar cliente. Tente novamente.')
+      setError(error instanceof Error ? error.message : 'Erro ao salvar cliente. Tente novamente.')
     }
   }
 
@@ -62,19 +71,21 @@ export default function ClientesPage() {
     if (!confirm('Tem certeza que deseja excluir este cliente?')) return
 
     try {
+      setError(null)
       const response = await fetch(`/api/clientes/${id}`, {
         method: 'DELETE',
       })
 
+      const result = await response.json()
+
       if (!response.ok) {
-        const error = await response.json()
-        throw new Error(error.message || 'Erro ao excluir cliente')
+        throw new Error(result.error || 'Erro ao excluir cliente')
       }
 
       loadClientes()
     } catch (error) {
       console.error('Erro ao excluir cliente:', error)
-      alert('Erro ao excluir cliente. Tente novamente.')
+      setError(error instanceof Error ? error.message : 'Erro ao excluir cliente. Tente novamente.')
     }
   }
 
@@ -103,6 +114,7 @@ export default function ClientesPage() {
           onClick={() => {
             setSelectedCliente(null)
             setShowForm(!showForm)
+            setError(null)
           }}
           className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition-colors"
         >
@@ -110,12 +122,26 @@ export default function ClientesPage() {
         </button>
       </div>
 
+      {error && (
+        <div className="mb-4 p-4 text-red-700 bg-red-100 rounded-lg">
+          {error}
+        </div>
+      )}
+
       {showForm && (
         <div className="mb-8 bg-white p-6 rounded-lg shadow-md">
           <h2 className="text-xl font-semibold mb-4">
             {selectedCliente ? 'Editar Cliente' : 'Novo Cliente'}
           </h2>
-          <ClienteForm cliente={selectedCliente} onSubmit={handleSubmit} />
+          <ClienteForm
+            cliente={selectedCliente}
+            onSubmit={handleSubmit}
+            onCancel={() => {
+              setShowForm(false)
+              setSelectedCliente(null)
+              setError(null)
+            }}
+          />
         </div>
       )}
 

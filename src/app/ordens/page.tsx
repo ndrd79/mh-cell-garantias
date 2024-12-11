@@ -44,11 +44,7 @@ export default function OrdensPage() {
       // Carregar ordens
       const { data: ordensData, error: ordensError } = await supabase
         .from('ordens_servico')
-        .select(\`
-          *,
-          cliente:clientes(*),
-          aparelho:aparelhos(*)
-        \`)
+        .select('*, cliente:clientes(*), aparelho:aparelhos(*)')
         .order('created_at', { ascending: false })
       
       if (ordensError) throw ordensError

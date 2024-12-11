@@ -85,6 +85,12 @@ Sistema de gerenciamento de garantias e serviços para assistência técnica de 
 - url
 - created_at
 
+## Configuração do Banco de Dados
+
+1. Crie um novo banco de dados no Supabase
+2. Execute o script `database/schema.sql` para criar as tabelas
+3. Se estiver atualizando uma versão antiga, execute o script `database/update_schema.sql`
+
 ## Pontos de Restauração
 O sistema mantém um histórico de alterações importantes no banco de dados, permitindo reverter operações em caso de necessidade.
 

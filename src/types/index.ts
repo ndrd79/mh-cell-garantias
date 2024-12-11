@@ -59,7 +59,7 @@ export type NovoCliente = {
   cpf: string
   rg: string
   telefone: string
-  telefone_alternativo: string | null
+  telefone_alternativo: string | null | undefined
   email: string
   endereco: string
   bairro: string
@@ -67,7 +67,7 @@ export type NovoCliente = {
   estado: string
   cep: string
   data_nascimento: string
-  observacoes: string | null
+  observacoes: string | null | undefined
 }
 
 export type Cliente = NovoCliente & {

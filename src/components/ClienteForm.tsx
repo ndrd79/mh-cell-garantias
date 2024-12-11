@@ -32,7 +32,7 @@ const clienteSchema = z.object({
       return numbers.replace(/(\d{2})(\d{4})(\d{4})/, '($1) $2-$3')
     }),
   telefone_alternativo: z
-    .string()
+    .union([z.string(), z.null()])
     .optional()
     .transform(val => {
       if (!val) return null
@@ -75,9 +75,13 @@ const clienteSchema = z.object({
       return !isNaN(date.getTime())
     }, 'Data de nascimento inválida'),
   observacoes: z
-    .string()
+    .union([z.string(), z.null()])
     .optional()
-    .transform(val => val?.trim() || null),
+    .transform(val => {
+      if (!val) return null
+      const trimmed = val.trim()
+      return trimmed || null
+    }),
 }) satisfies z.ZodType<NovoCliente>
 
 type ClienteFormData = z.infer<typeof clienteSchema>

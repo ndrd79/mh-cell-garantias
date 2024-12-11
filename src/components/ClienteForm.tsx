@@ -5,17 +5,39 @@ import { Cliente, NovoCliente } from '@/types'
 
 const clienteSchema = z.object({
   nome: z.string().min(3, 'Nome deve ter pelo menos 3 caracteres'),
-  cpf: z.string().min(11, 'CPF inválido').max(14, 'CPF inválido'),
-  rg: z.string().min(7, 'RG inválido'),
-  telefone: z.string().min(10, 'Telefone inválido'),
-  telefone_alternativo: z.string().optional(),
-  email: z.string().email('Email inválido'),
+  cpf: z
+    .string()
+    .min(11, 'CPF inválido')
+    .max(14, 'CPF inválido')
+    .transform(val => val.replace(/\D/g, '')),
+  rg: z
+    .string()
+    .min(7, 'RG inválido')
+    .transform(val => val.replace(/\D/g, '')),
+  telefone: z
+    .string()
+    .min(10, 'Telefone inválido')
+    .transform(val => val.replace(/\D/g, '')),
+  telefone_alternativo: z
+    .string()
+    .transform(val => val.replace(/\D/g, ''))
+    .optional(),
+  email: z
+    .string()
+    .email('Email inválido')
+    .transform(val => val.toLowerCase()),
   endereco: z.string().min(5, 'Endereço deve ter pelo menos 5 caracteres'),
   bairro: z.string().min(3, 'Bairro deve ter pelo menos 3 caracteres'),
   cidade: z.string().min(3, 'Cidade deve ter pelo menos 3 caracteres'),
-  estado: z.string().length(2, 'Use a sigla do estado (ex: SP)'),
-  cep: z.string().length(8, 'CEP inválido'),
-  data_nascimento: z.string(),
+  estado: z
+    .string()
+    .length(2, 'Use a sigla do estado (ex: SP)')
+    .transform(val => val.toUpperCase()),
+  cep: z
+    .string()
+    .length(8, 'CEP inválido')
+    .transform(val => val.replace(/\D/g, '')),
+  data_nascimento: z.string().min(1, 'Data de nascimento é obrigatória'),
   observacoes: z.string().optional(),
 })
 

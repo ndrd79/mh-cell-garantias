@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react'
 import { supabase } from '@/lib/supabase'
 import { OrdemServico, Cliente, Aparelho } from '@/types'
 import { AparelhoForm } from '@/components/AparelhoForm'
-import { OrdemServicoForm } from '@/components/OrdemServicoForm'
+import { OrdemServicoForm, OrdemServicoFormData } from '@/components/OrdemServicoForm'
 
 export default function OrdensPage() {
   const [ordens, setOrdens] = useState<OrdemServico[]>([])

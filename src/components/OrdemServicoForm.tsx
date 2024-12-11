@@ -15,7 +15,7 @@ const ordemServicoSchema = z.object({
   data_saida: z.string().nullable(),
 })
 
-type OrdemServicoFormData = z.infer<typeof ordemServicoSchema>
+export type OrdemServicoFormData = z.infer<typeof ordemServicoSchema>
 
 interface OrdemServicoFormProps {
   clienteId: string

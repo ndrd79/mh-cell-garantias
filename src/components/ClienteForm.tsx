@@ -47,10 +47,6 @@ const baseSchema = z.object({
     .string()
     .length(2, 'Use a sigla do estado (ex: SP)')
     .transform(val => val.toUpperCase().trim()),
-  cep: z
-    .string()
-    .length(8, 'CEP inválido')
-    .transform(val => val.replace(/\D/g, '')),
   data_nascimento: z
     .string()
     .min(1, 'Data de nascimento é obrigatória')
@@ -110,7 +106,6 @@ export function ClienteForm({ cliente, onSubmit, onCancel }: ClienteFormProps) {
       endereco: cliente.endereco,
       cidade: cliente.cidade,
       estado: cliente.estado,
-      cep: cliente.cep,
       data_nascimento: cliente.data_nascimento,
       observacoes: cliente.observacoes || ''
     } : undefined,
@@ -256,7 +251,7 @@ export function ClienteForm({ cliente, onSubmit, onCancel }: ClienteFormProps) {
           )}
         </div>
 
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+        <div className="grid grid-cols-2 gap-4">
           <div>
             <label htmlFor="cidade" className="block text-sm font-medium text-gray-700">
               Cidade *
@@ -285,21 +280,6 @@ export function ClienteForm({ cliente, onSubmit, onCancel }: ClienteFormProps) {
             />
             {errors.estado && (
               <p className="mt-1 text-sm text-red-600">{errors.estado.message}</p>
-            )}
-          </div>
-
-          <div>
-            <label htmlFor="cep" className="block text-sm font-medium text-gray-700">
-              CEP *
-            </label>
-            <input
-              type="text"
-              id="cep"
-              {...register('cep')}
-              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-            />
-            {errors.cep && (
-              <p className="mt-1 text-sm text-red-600">{errors.cep.message}</p>
             )}
           </div>
         </div>

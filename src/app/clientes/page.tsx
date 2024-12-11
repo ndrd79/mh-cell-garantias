@@ -198,8 +198,6 @@ export default function ClientesPage() {
                   {cliente.endereco}
                   <br />
                   {cliente.cidade} - {cliente.estado}
-                  <br />
-                  CEP: {formatCEP(cliente.cep)}
                 </p>
               </div>
             </div>

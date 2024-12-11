@@ -63,7 +63,6 @@ export type NovoClienteBase = {
   endereco: string
   cidade: string
   estado: string
-  cep: string
   data_nascimento: string
 }
 

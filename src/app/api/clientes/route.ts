@@ -7,10 +7,6 @@ function formatCPF(cpf: string): string {
   return numbers.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, '$1.$2.$3-$4')
 }
 
-function formatCEP(cep: string): string {
-  return cep.replace(/\D/g, '')
-}
-
 function formatTelefone(telefone: string): string {
   const numbers = telefone.replace(/\D/g, '')
   if (numbers.length === 11) {
@@ -37,13 +33,12 @@ export async function POST(request: Request) {
       endereco,
       cidade,
       estado,
-      cep,
       data_nascimento,
       observacoes
     } = data
 
     // Validações básicas
-    if (!nome || !cpf || !rg || !telefone || !email || !endereco || !cidade || !estado || !cep || !data_nascimento) {
+    if (!nome || !cpf || !rg || !telefone || !email || !endereco || !cidade || !estado || !data_nascimento) {
       console.error('Campos obrigatórios faltando:', {
         nome: !nome,
         cpf: !cpf,
@@ -53,7 +48,6 @@ export async function POST(request: Request) {
         endereco: !endereco,
         cidade: !cidade,
         estado: !estado,
-        cep: !cep,
         data_nascimento: !data_nascimento
       })
       return NextResponse.json(
@@ -73,7 +67,6 @@ export async function POST(request: Request) {
       endereco: endereco.trim(),
       cidade: cidade.trim(),
       estado: estado.toUpperCase().trim(),
-      cep: formatCEP(cep),
       data_nascimento,
       observacoes: observacoes?.trim() || null
     }

@@ -4,41 +4,79 @@ import { z } from 'zod'
 import { Cliente, NovoCliente } from '@/types'
 
 const clienteSchema = z.object({
-  nome: z.string().min(3, 'Nome deve ter pelo menos 3 caracteres'),
+  nome: z
+    .string()
+    .min(3, 'Nome deve ter pelo menos 3 caracteres')
+    .transform(val => val.trim()),
   cpf: z
     .string()
     .min(11, 'CPF inválido')
     .max(14, 'CPF inválido')
-    .transform(val => val.replace(/\D/g, '')),
+    .transform(val => {
+      const numbers = val.replace(/\D/g, '')
+      if (numbers.length !== 11) return val
+      return numbers.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, '$1.$2.$3-$4')
+    }),
   rg: z
     .string()
     .min(7, 'RG inválido')
-    .transform(val => val.replace(/\D/g, '')),
+    .transform(val => val.replace(/[^\dXx]/g, '')),
   telefone: z
     .string()
     .min(10, 'Telefone inválido')
-    .transform(val => val.replace(/\D/g, '')),
+    .transform(val => {
+      const numbers = val.replace(/\D/g, '')
+      if (numbers.length === 11) {
+        return numbers.replace(/(\d{2})(\d{5})(\d{4})/, '($1) $2-$3')
+      }
+      return numbers.replace(/(\d{2})(\d{4})(\d{4})/, '($1) $2-$3')
+    }),
   telefone_alternativo: z
     .string()
-    .transform(val => val.replace(/\D/g, ''))
-    .optional(),
+    .transform(val => {
+      if (!val) return null
+      const numbers = val.replace(/\D/g, '')
+      if (numbers.length === 11) {
+        return numbers.replace(/(\d{2})(\d{5})(\d{4})/, '($1) $2-$3')
+      }
+      return numbers.replace(/(\d{2})(\d{4})(\d{4})/, '($1) $2-$3')
+    })
+    .nullable(),
   email: z
     .string()
     .email('Email inválido')
-    .transform(val => val.toLowerCase()),
-  endereco: z.string().min(5, 'Endereço deve ter pelo menos 5 caracteres'),
-  bairro: z.string().min(3, 'Bairro deve ter pelo menos 3 caracteres'),
-  cidade: z.string().min(3, 'Cidade deve ter pelo menos 3 caracteres'),
+    .transform(val => val.toLowerCase().trim()),
+  endereco: z
+    .string()
+    .min(5, 'Endereço deve ter pelo menos 5 caracteres')
+    .transform(val => val.trim()),
+  bairro: z
+    .string()
+    .min(3, 'Bairro deve ter pelo menos 3 caracteres')
+    .transform(val => val.trim()),
+  cidade: z
+    .string()
+    .min(3, 'Cidade deve ter pelo menos 3 caracteres')
+    .transform(val => val.trim()),
   estado: z
     .string()
     .length(2, 'Use a sigla do estado (ex: SP)')
-    .transform(val => val.toUpperCase()),
+    .transform(val => val.toUpperCase().trim()),
   cep: z
     .string()
     .length(8, 'CEP inválido')
     .transform(val => val.replace(/\D/g, '')),
-  data_nascimento: z.string().min(1, 'Data de nascimento é obrigatória'),
-  observacoes: z.string().optional(),
+  data_nascimento: z
+    .string()
+    .min(1, 'Data de nascimento é obrigatória')
+    .refine((val) => {
+      const date = new Date(val)
+      return !isNaN(date.getTime())
+    }, 'Data de nascimento inválida'),
+  observacoes: z
+    .string()
+    .transform(val => val?.trim() || null)
+    .nullable(),
 })
 
 type ClienteFormData = z.infer<typeof clienteSchema>

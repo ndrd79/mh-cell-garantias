@@ -2,6 +2,23 @@ import { createRouteHandlerClient } from '@supabase/auth-helpers-nextjs'
 import { cookies } from 'next/headers'
 import { NextResponse } from 'next/server'
 
+function formatCPF(cpf: string): string {
+  const numbers = cpf.replace(/\D/g, '')
+  return numbers.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, '$1.$2.$3-$4')
+}
+
+function formatCEP(cep: string): string {
+  return cep.replace(/\D/g, '')
+}
+
+function formatTelefone(telefone: string): string {
+  const numbers = telefone.replace(/\D/g, '')
+  if (numbers.length === 11) {
+    return numbers.replace(/(\d{2})(\d{5})(\d{4})/, '($1) $2-$3')
+  }
+  return numbers.replace(/(\d{2})(\d{4})(\d{4})/, '($1) $2-$3')
+}
+
 export async function POST(request: Request) {
   const supabase = createRouteHandlerClient({ cookies })
 
@@ -30,35 +47,50 @@ export async function POST(request: Request) {
       )
     }
 
+    // Formata os dados antes de salvar
+    const formattedData = {
+      nome: nome.trim(),
+      cpf: formatCPF(cpf),
+      rg: rg.replace(/\D/g, ''),
+      telefone: formatTelefone(telefone),
+      telefone_alternativo: telefone_alternativo ? formatTelefone(telefone_alternativo) : null,
+      email: email.toLowerCase().trim(),
+      endereco: endereco.trim(),
+      bairro: bairro.trim(),
+      cidade: cidade.trim(),
+      estado: estado.toUpperCase().trim(),
+      cep: formatCEP(cep),
+      data_nascimento,
+      observacoes: observacoes?.trim() || null
+    }
+
     const { data, error } = await supabase
       .from('clientes')
-      .insert([
-        {
-          nome,
-          cpf: cpf.replace(/\D/g, ''), // Remove caracteres não numéricos
-          rg: rg.replace(/\D/g, ''),
-          telefone: telefone.replace(/\D/g, ''),
-          telefone_alternativo: telefone_alternativo?.replace(/\D/g, '') || null,
-          email,
-          endereco,
-          bairro,
-          cidade,
-          estado: estado?.toUpperCase() || '',
-          cep: cep.replace(/\D/g, ''),
-          data_nascimento,
-          observacoes: observacoes || null
-        }
-      ])
+      .insert([formattedData])
       .select()
 
     if (error) {
       console.error('Erro ao salvar cliente:', error)
+      
       if (error.code === '23505') {
+        if (error.message.includes('cpf')) {
+          return NextResponse.json(
+            { error: 'CPF já cadastrado' },
+            { status: 400 }
+          )
+        }
+        if (error.message.includes('email')) {
+          return NextResponse.json(
+            { error: 'Email já cadastrado' },
+            { status: 400 }
+          )
+        }
         return NextResponse.json(
           { error: 'CPF ou Email já cadastrado' },
           { status: 400 }
         )
       }
+
       return NextResponse.json(
         { error: 'Erro ao salvar cliente no banco de dados' },
         { status: 400 }

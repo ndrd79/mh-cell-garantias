@@ -1,22 +1,3 @@
-export type Cliente = {
-  id?: string
-  nome: string
-  cpf: string
-  rg: string
-  telefone: string
-  telefone_alternativo?: string
-  email: string
-  endereco: string
-  bairro: string
-  cidade: string
-  estado: string
-  cep: string
-  data_nascimento: string
-  observacoes?: string
-  created_at?: string
-  updated_at?: string
-}
-
 export type TipoAparelho = 'CELULAR' | 'COMPUTADOR'
 
 export type Aparelho = {
@@ -71,4 +52,26 @@ export type FotoServico = {
   tipo: TipoFoto
   url: string
   created_at: string
+}
+
+export type NovoCliente = {
+  nome: string
+  cpf: string
+  rg: string
+  telefone: string
+  telefone_alternativo?: string
+  email: string
+  endereco: string
+  bairro: string
+  cidade: string
+  estado: string
+  cep: string
+  data_nascimento: string
+  observacoes?: string
+}
+
+export type Cliente = NovoCliente & {
+  id: string
+  created_at: string
+  updated_at: string
 }

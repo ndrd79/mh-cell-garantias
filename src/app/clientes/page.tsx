@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react'
 import { ClienteForm } from '@/components/ClienteForm'
 import { supabase } from '@/lib/supabase'
-import { Cliente } from '@/types'
+import { Cliente, NovoCliente } from '@/types'
 import { FiEdit2, FiTrash2, FiPhone, FiMail, FiMapPin, FiUser } from 'react-icons/fi'
 
 export default function ClientesPage() {
@@ -34,7 +34,7 @@ export default function ClientesPage() {
     }
   }
 
-  async function handleSubmit(data: Omit<Cliente, 'id' | 'created_at' | 'updated_at'>) {
+  async function handleSubmit(data: NovoCliente) {
     try {
       if (selectedCliente) {
         const { error } = await supabase

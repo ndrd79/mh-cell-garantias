@@ -1,7 +1,7 @@
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
-import { Cliente } from '@/types'
+import { Cliente, NovoCliente } from '@/types'
 
 const clienteSchema = z.object({
   nome: z.string().min(3, 'Nome deve ter pelo menos 3 caracteres'),
@@ -23,7 +23,7 @@ type ClienteFormData = z.infer<typeof clienteSchema>
 
 interface ClienteFormProps {
   cliente?: Cliente | null
-  onSubmit: (data: ClienteFormData) => Promise<void>
+  onSubmit: (data: NovoCliente) => Promise<void>
 }
 
 export function ClienteForm({ cliente, onSubmit }: ClienteFormProps) {

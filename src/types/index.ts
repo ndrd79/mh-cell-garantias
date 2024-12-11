@@ -36,6 +36,8 @@ export type OrdemServico = {
   data_saida: string | null
   created_at: string
   updated_at: string
+  cliente?: Cliente
+  aparelho?: Aparelho
 }
 
 export type StatusGarantia = 'ATIVA' | 'VENCIDA' | 'CANCELADA'

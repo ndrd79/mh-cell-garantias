@@ -195,7 +195,7 @@ export default function ClientesPage() {
                 </p>
                 <p className="flex items-center">
                   <FiMapPin className="mr-2" />
-                  {cliente.endereco}, {cliente.bairro}
+                  {cliente.endereco}
                   <br />
                   {cliente.cidade} - {cliente.estado}
                   <br />

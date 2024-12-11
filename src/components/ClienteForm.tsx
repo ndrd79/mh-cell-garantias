@@ -33,15 +33,16 @@ const clienteSchema = z.object({
     }),
   telefone_alternativo: z
     .string()
+    .optional()
     .transform(val => {
       if (!val) return null
       const numbers = val.replace(/\D/g, '')
+      if (!numbers) return null
       if (numbers.length === 11) {
         return numbers.replace(/(\d{2})(\d{5})(\d{4})/, '($1) $2-$3')
       }
       return numbers.replace(/(\d{2})(\d{4})(\d{4})/, '($1) $2-$3')
-    })
-    .nullable(),
+    }),
   email: z
     .string()
     .email('Email inválido')
@@ -75,9 +76,9 @@ const clienteSchema = z.object({
     }, 'Data de nascimento inválida'),
   observacoes: z
     .string()
-    .transform(val => val?.trim() || null)
-    .nullable(),
-})
+    .optional()
+    .transform(val => val?.trim() || null),
+}) satisfies z.ZodType<NovoCliente>
 
 type ClienteFormData = z.infer<typeof clienteSchema>
 

@@ -4,10 +4,19 @@ CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 -- 1. Tabela de clientes
 CREATE TABLE clientes (
     id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
-    nome TEXT NOT NULL,
-    telefone TEXT NOT NULL,
-    email TEXT NOT NULL,
-    endereco TEXT NOT NULL,
+    nome VARCHAR(255) NOT NULL,
+    cpf VARCHAR(14) NOT NULL UNIQUE,
+    rg VARCHAR(20) NOT NULL,
+    telefone VARCHAR(20) NOT NULL,
+    telefone_alternativo VARCHAR(20),
+    email VARCHAR(255) NOT NULL UNIQUE,
+    endereco VARCHAR(255) NOT NULL,
+    bairro VARCHAR(100) NOT NULL,
+    cidade VARCHAR(100) NOT NULL,
+    estado CHAR(2) NOT NULL,
+    cep VARCHAR(8) NOT NULL,
+    data_nascimento DATE NOT NULL,
+    observacoes TEXT,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL,
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
 );

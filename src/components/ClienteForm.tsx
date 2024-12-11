@@ -22,7 +22,7 @@ const clienteSchema = z.object({
 type ClienteFormData = z.infer<typeof clienteSchema>
 
 interface ClienteFormProps {
-  cliente?: Cliente
+  cliente?: Cliente | null
   onSubmit: (data: ClienteFormData) => Promise<void>
 }
 

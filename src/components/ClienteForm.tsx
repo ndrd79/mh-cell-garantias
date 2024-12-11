@@ -3,7 +3,7 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 import { Cliente, NovoCliente } from '@/types'
 
-const clienteSchema = z.object({
+const baseSchema = z.object({
   nome: z
     .string()
     .min(3, 'Nome deve ter pelo menos 3 caracteres')
@@ -26,18 +26,6 @@ const clienteSchema = z.object({
     .min(10, 'Telefone inválido')
     .transform(val => {
       const numbers = val.replace(/\D/g, '')
-      if (numbers.length === 11) {
-        return numbers.replace(/(\d{2})(\d{5})(\d{4})/, '($1) $2-$3')
-      }
-      return numbers.replace(/(\d{2})(\d{4})(\d{4})/, '($1) $2-$3')
-    }),
-  telefone_alternativo: z
-    .union([z.string(), z.null()])
-    .optional()
-    .transform(val => {
-      if (!val) return null
-      const numbers = val.replace(/\D/g, '')
-      if (!numbers) return null
       if (numbers.length === 11) {
         return numbers.replace(/(\d{2})(\d{5})(\d{4})/, '($1) $2-$3')
       }
@@ -74,14 +62,31 @@ const clienteSchema = z.object({
       const date = new Date(val)
       return !isNaN(date.getTime())
     }, 'Data de nascimento inválida'),
-  observacoes: z
-    .union([z.string(), z.null()])
+})
+
+const clienteSchema = baseSchema.extend({
+  telefone_alternativo: z
+    .string()
+    .transform(val => {
+      if (!val) return null
+      const numbers = val.replace(/\D/g, '')
+      if (!numbers) return null
+      if (numbers.length === 11) {
+        return numbers.replace(/(\d{2})(\d{5})(\d{4})/, '($1) $2-$3')
+      }
+      return numbers.replace(/(\d{2})(\d{4})(\d{4})/, '($1) $2-$3')
+    })
     .optional()
+    .nullable(),
+  observacoes: z
+    .string()
     .transform(val => {
       if (!val) return null
       const trimmed = val.trim()
       return trimmed || null
-    }),
+    })
+    .optional()
+    .nullable(),
 }) satisfies z.ZodType<NovoCliente>
 
 type ClienteFormData = z.infer<typeof clienteSchema>

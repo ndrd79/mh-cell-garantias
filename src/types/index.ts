@@ -54,12 +54,11 @@ export type FotoServico = {
   created_at: string
 }
 
-export type NovoCliente = {
+export type NovoClienteBase = {
   nome: string
   cpf: string
   rg: string
   telefone: string
-  telefone_alternativo: string | null | undefined
   email: string
   endereco: string
   bairro: string
@@ -67,7 +66,11 @@ export type NovoCliente = {
   estado: string
   cep: string
   data_nascimento: string
-  observacoes: string | null | undefined
+}
+
+export type NovoCliente = NovoClienteBase & {
+  telefone_alternativo?: string | null
+  observacoes?: string | null
 }
 
 export type Cliente = NovoCliente & {

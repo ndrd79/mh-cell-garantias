@@ -12,7 +12,7 @@ const ordemServicoSchema = z.object({
   valor: z.number().min(0, 'Valor não pode ser negativo'),
   status: z.enum(['AGUARDANDO', 'EM_ANALISE', 'APROVADO', 'EM_MANUTENCAO', 'CONCLUIDO', 'ENTREGUE'] as const),
   data_entrada: z.string(),
-  data_saida: z.string().optional(),
+  data_saida: z.string().nullable(),
 })
 
 type OrdemServicoFormData = z.infer<typeof ordemServicoSchema>

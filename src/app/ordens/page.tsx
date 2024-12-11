@@ -77,11 +77,16 @@ export default function OrdensPage() {
     }
   }
 
-  async function handleOrdemSubmit(data: Omit<OrdemServico, 'id' | 'created_at' | 'updated_at'>) {
+  async function handleOrdemSubmit(data: OrdemServicoFormData) {
     try {
+      setIsLoading(true)
       const { error } = await supabase
         .from('ordens_servico')
-        .insert([data])
+        .insert({
+          ...data,
+          data_saida: data.data_saida || null,
+          servico_realizado: data.servico_realizado || null
+        })
 
       if (error) throw error
 
@@ -90,8 +95,10 @@ export default function OrdensPage() {
       setSelectedCliente('')
       setSelectedAparelho('')
     } catch (error) {
-      console.error('Erro ao salvar ordem:', error)
-      alert('Erro ao salvar ordem. Tente novamente.')
+      console.error('Erro ao criar ordem de serviço:', error)
+      alert('Erro ao criar ordem de serviço. Tente novamente.')
+    } finally {
+      setIsLoading(false)
     }
   }
 

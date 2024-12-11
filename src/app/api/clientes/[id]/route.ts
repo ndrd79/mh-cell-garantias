@@ -2,7 +2,10 @@ import { createRouteHandlerClient } from '@supabase/auth-helpers-nextjs'
 import { cookies } from 'next/headers'
 import { NextResponse } from 'next/server'
 
-export async function POST(request: Request) {
+export async function PUT(
+  request: Request,
+  { params }: { params: { id: string } }
+) {
   const supabase = createRouteHandlerClient({ cookies })
 
   try {
@@ -24,23 +27,23 @@ export async function POST(request: Request) {
 
     const { data, error } = await supabase
       .from('clientes')
-      .insert([
-        {
-          nome,
-          cpf,
-          rg,
-          telefone,
-          telefone_alternativo,
-          email,
-          endereco,
-          bairro,
-          cidade,
-          estado: estado.toUpperCase(),
-          cep,
-          data_nascimento,
-          observacoes
-        }
-      ])
+      .update({
+        nome,
+        cpf,
+        rg,
+        telefone,
+        telefone_alternativo,
+        email,
+        endereco,
+        bairro,
+        cidade,
+        estado: estado.toUpperCase(),
+        cep,
+        data_nascimento,
+        observacoes,
+        updated_at: new Date().toISOString()
+      })
+      .eq('id', params.id)
       .select()
 
     if (error) {
@@ -56,20 +59,20 @@ export async function POST(request: Request) {
   }
 }
 
-export async function GET() {
+export async function DELETE(
+  _request: Request,
+  { params }: { params: { id: string } }
+) {
   const supabase = createRouteHandlerClient({ cookies })
 
   try {
-    const { data, error } = await supabase
-      .from('clientes')
-      .select('*')
-      .order('nome')
+    const { error } = await supabase.from('clientes').delete().eq('id', params.id)
 
     if (error) {
       return NextResponse.json({ error: error.message }, { status: 400 })
     }
 
-    return NextResponse.json(data)
+    return NextResponse.json({ message: 'Cliente excluído com sucesso' })
   } catch (error) {
     return NextResponse.json(
       { error: 'Erro ao processar a requisição' },

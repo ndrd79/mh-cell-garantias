@@ -2,7 +2,6 @@
 
 import { useState, useEffect } from 'react'
 import { ClienteForm } from '@/components/ClienteForm'
-import { supabase } from '@/lib/supabase'
 import { Cliente, NovoCliente } from '@/types'
 import { FiEdit2, FiTrash2, FiPhone, FiMail, FiMapPin, FiUser } from 'react-icons/fi'
 
@@ -19,12 +18,9 @@ export default function ClientesPage() {
   async function loadClientes() {
     try {
       setIsLoading(true)
-      const { data, error } = await supabase
-        .from('clientes')
-        .select('*')
-        .order('nome')
-
-      if (error) throw error
+      const response = await fetch('/api/clientes')
+      if (!response.ok) throw new Error('Erro ao carregar clientes')
+      const data = await response.json()
       setClientes(data || [])
     } catch (error) {
       console.error('Erro ao carregar clientes:', error)
@@ -36,19 +32,21 @@ export default function ClientesPage() {
 
   async function handleSubmit(data: NovoCliente) {
     try {
-      if (selectedCliente) {
-        const { error } = await supabase
-          .from('clientes')
-          .update({
-            ...data,
-            updated_at: new Date().toISOString()
-          })
-          .eq('id', selectedCliente.id)
+      const url = selectedCliente 
+        ? `/api/clientes/${selectedCliente.id}`
+        : '/api/clientes'
 
-        if (error) throw error
-      } else {
-        const { error } = await supabase.from('clientes').insert([data])
-        if (error) throw error
+      const response = await fetch(url, {
+        method: selectedCliente ? 'PUT' : 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data),
+      })
+
+      if (!response.ok) {
+        const error = await response.json()
+        throw new Error(error.message || 'Erro ao salvar cliente')
       }
 
       setShowForm(false)
@@ -64,8 +62,14 @@ export default function ClientesPage() {
     if (!confirm('Tem certeza que deseja excluir este cliente?')) return
 
     try {
-      const { error } = await supabase.from('clientes').delete().eq('id', id)
-      if (error) throw error
+      const response = await fetch(`/api/clientes/${id}`, {
+        method: 'DELETE',
+      })
+
+      if (!response.ok) {
+        const error = await response.json()
+        throw new Error(error.message || 'Erro ao excluir cliente')
+      }
 
       loadClientes()
     } catch (error) {

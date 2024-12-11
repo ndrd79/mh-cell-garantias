@@ -51,6 +51,7 @@ export type Garantia = {
   status: StatusGarantia
   created_at: string
   updated_at: string
+  ordem_servico?: OrdemServico
 }
 
 export type TipoFoto = 'ANTES' | 'DEPOIS'

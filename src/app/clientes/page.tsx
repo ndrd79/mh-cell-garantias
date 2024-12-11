@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { ClienteForm } from '@/components/ClienteForm'
 import { supabase } from '@/lib/supabase'
 import { Cliente } from '@/types'
@@ -11,7 +11,7 @@ export default function ClientesPage() {
   const [showForm, setShowForm] = useState(false)
 
   // Carregar clientes ao montar o componente
-  useState(() => {
+  useEffect(() => {
     loadClientes()
   }, [])
 
@@ -75,9 +75,9 @@ export default function ClientesPage() {
               className="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow"
             >
               <h3 className="text-xl font-semibold mb-2">{cliente.nome}</h3>
-              <p className="text-gray-600 mb-1">📱 {cliente.telefone}</p>
-              <p className="text-gray-600 mb-1">📧 {cliente.email}</p>
-              <p className="text-gray-600">📍 {cliente.endereco}</p>
+              <p className="text-gray-600 mb-1"> {cliente.telefone}</p>
+              <p className="text-gray-600 mb-1"> {cliente.email}</p>
+              <p className="text-gray-600"> {cliente.endereco}</p>
             </div>
           ))}
         </div>

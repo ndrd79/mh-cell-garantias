@@ -23,14 +23,7 @@ export default function GarantiasPage() {
       // Carregar garantias com dados relacionados
       const { data: garantiasData, error: garantiasError } = await supabase
         .from('garantias')
-        .select(\`
-          *,
-          ordem_servico:ordens_servico(
-            *,
-            cliente:clientes(*),
-            aparelho:aparelhos(*)
-          )
-        \`)
+        .select('*, ordem_servico:ordens_servico(*, cliente:clientes(*), aparelho:aparelhos(*))')
         .order('created_at', { ascending: false })
       
       if (garantiasError) throw garantiasError
@@ -39,11 +32,7 @@ export default function GarantiasPage() {
       // Carregar ordens sem garantia
       const { data: ordensData, error: ordensError } = await supabase
         .from('ordens_servico')
-        .select(\`
-          *,
-          cliente:clientes(*),
-          aparelho:aparelhos(*)
-        \`)
+        .select('*, cliente:clientes(*), aparelho:aparelhos(*)')
         .eq('status', 'CONCLUIDO')
         .not('id', 'in', `(${garantiasData?.map(g => g.ordem_servico_id).join(',') || 'null'})`)
       

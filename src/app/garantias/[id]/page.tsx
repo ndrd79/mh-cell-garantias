@@ -18,14 +18,7 @@ export default function GarantiaPage({ params }: { params: { id: string } }) {
       setIsLoading(true)
       const { data, error } = await supabase
         .from('garantias')
-        .select(\`
-          *,
-          ordem_servico:ordens_servico(
-            *,
-            cliente:clientes(*),
-            aparelho:aparelhos(*)
-          )
-        \`)
+        .select('*, ordem_servico:ordens_servico(*, cliente:clientes(*), aparelho:aparelhos(*))')
         .eq('id', params.id)
         .single()
 

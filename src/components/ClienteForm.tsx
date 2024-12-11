@@ -33,7 +33,21 @@ export function ClienteForm({ cliente, onSubmit }: ClienteFormProps) {
     formState: { errors, isSubmitting },
   } = useForm<ClienteFormData>({
     resolver: zodResolver(clienteSchema),
-    defaultValues: cliente,
+    defaultValues: cliente ? {
+      nome: cliente.nome,
+      cpf: cliente.cpf,
+      rg: cliente.rg,
+      telefone: cliente.telefone,
+      telefone_alternativo: cliente.telefone_alternativo,
+      email: cliente.email,
+      endereco: cliente.endereco,
+      bairro: cliente.bairro,
+      cidade: cliente.cidade,
+      estado: cliente.estado,
+      cep: cliente.cep,
+      data_nascimento: cliente.data_nascimento,
+      observacoes: cliente.observacoes
+    } : undefined,
   })
 
   return (

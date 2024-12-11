@@ -39,10 +39,6 @@ const baseSchema = z.object({
     .string()
     .min(5, 'Endereço deve ter pelo menos 5 caracteres')
     .transform(val => val.trim()),
-  bairro: z
-    .string()
-    .min(3, 'Bairro deve ter pelo menos 3 caracteres')
-    .transform(val => val.trim()),
   cidade: z
     .string()
     .min(3, 'Cidade deve ter pelo menos 3 caracteres')
@@ -112,7 +108,6 @@ export function ClienteForm({ cliente, onSubmit, onCancel }: ClienteFormProps) {
       telefone_alternativo: cliente.telefone_alternativo || '',
       email: cliente.email,
       endereco: cliente.endereco,
-      bairro: cliente.bairro,
       cidade: cliente.cidade,
       estado: cliente.estado,
       cep: cliente.cep,
@@ -246,36 +241,19 @@ export function ClienteForm({ cliente, onSubmit, onCancel }: ClienteFormProps) {
       <div className="space-y-4">
         <h3 className="text-lg font-medium text-gray-900">Endereço</h3>
         
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div>
-            <label htmlFor="endereco" className="block text-sm font-medium text-gray-700">
-              Endereço *
-            </label>
-            <input
-              type="text"
-              id="endereco"
-              {...register('endereco')}
-              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-            />
-            {errors.endereco && (
-              <p className="mt-1 text-sm text-red-600">{errors.endereco.message}</p>
-            )}
-          </div>
-
-          <div>
-            <label htmlFor="bairro" className="block text-sm font-medium text-gray-700">
-              Bairro *
-            </label>
-            <input
-              type="text"
-              id="bairro"
-              {...register('bairro')}
-              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-            />
-            {errors.bairro && (
-              <p className="mt-1 text-sm text-red-600">{errors.bairro.message}</p>
-            )}
-          </div>
+        <div>
+          <label htmlFor="endereco" className="block text-sm font-medium text-gray-700">
+            Endereço *
+          </label>
+          <input
+            type="text"
+            id="endereco"
+            {...register('endereco')}
+            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+          />
+          {errors.endereco && (
+            <p className="mt-1 text-sm text-red-600">{errors.endereco.message}</p>
+          )}
         </div>
 
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
@@ -303,7 +281,7 @@ export function ClienteForm({ cliente, onSubmit, onCancel }: ClienteFormProps) {
               id="estado"
               maxLength={2}
               {...register('estado')}
-              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 uppercase"
+              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
             />
             {errors.estado && (
               <p className="mt-1 text-sm text-red-600">{errors.estado.message}</p>

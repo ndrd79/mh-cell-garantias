@@ -35,7 +35,6 @@ export async function POST(request: Request) {
       telefone_alternativo,
       email,
       endereco,
-      bairro,
       cidade,
       estado,
       cep,
@@ -44,7 +43,7 @@ export async function POST(request: Request) {
     } = data
 
     // Validações básicas
-    if (!nome || !cpf || !rg || !telefone || !email || !endereco || !bairro || !cidade || !estado || !cep || !data_nascimento) {
+    if (!nome || !cpf || !rg || !telefone || !email || !endereco || !cidade || !estado || !cep || !data_nascimento) {
       console.error('Campos obrigatórios faltando:', {
         nome: !nome,
         cpf: !cpf,
@@ -52,7 +51,6 @@ export async function POST(request: Request) {
         telefone: !telefone,
         email: !email,
         endereco: !endereco,
-        bairro: !bairro,
         cidade: !cidade,
         estado: !estado,
         cep: !cep,
@@ -73,7 +71,6 @@ export async function POST(request: Request) {
       telefone_alternativo: telefone_alternativo ? formatTelefone(telefone_alternativo) : null,
       email: email.toLowerCase().trim(),
       endereco: endereco.trim(),
-      bairro: bairro.trim(),
       cidade: cidade.trim(),
       estado: estado.toUpperCase().trim(),
       cep: formatCEP(cep),

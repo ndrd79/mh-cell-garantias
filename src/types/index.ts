@@ -61,7 +61,6 @@ export type NovoClienteBase = {
   telefone: string
   email: string
   endereco: string
-  bairro: string
   cidade: string
   estado: string
   cep: string

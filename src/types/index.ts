@@ -29,7 +29,7 @@ export type OrdemServico = {
   aparelho_id: string
   problema_relatado: string
   diagnostico: string
-  servico_realizado: string
+  servico_realizado?: string
   valor: number
   status: StatusOrdem
   data_entrada: string

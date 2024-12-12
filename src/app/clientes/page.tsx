@@ -102,10 +102,6 @@ export default function ClientesPage() {
     return phone.replace(/(\d{2})(\d{5})(\d{4})/, '($1) $2-$3')
   }
 
-  function formatCEP(cep: string) {
-    return cep.replace(/(\d{5})(\d{3})/, '$1-$2')
-  }
-
   return (
     <div className="max-w-7xl mx-auto p-8">
       <div className="flex justify-between items-center mb-8">
@@ -195,9 +191,7 @@ export default function ClientesPage() {
                 </p>
                 <p className="flex items-center">
                   <FiMapPin className="mr-2" />
-                  {cliente.endereco}
-                  <br />
-                  {cliente.cidade} - {cliente.estado}
+                  {cliente.endereco}, {cliente.cidade} - {cliente.estado}
                 </p>
               </div>
             </div>
